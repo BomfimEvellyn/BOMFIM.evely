@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd; /* Azul clarinho */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            color: #0288d1;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 5px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #bbdefb; /* Azul mais forte */
+            border: 2px solid #0288d1; /* Azul escuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #01579b;
+        }
+
+        .cell:hover {
+            background-color: #90caf9;
+        }
+
+        .winner {
+            color: #0288d1;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jogo da Velha</h1>
+        <div class="board">
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+        </div>
+        <p class="winner" id="winner-message"></p>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('[data-cell]');
+        const winnerMessage = document.getElementById('winner-message');
+        let isCircleTurn = false;
+
+        const checkWinner = () => {
+            const winCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+            return winCombinations.some(combination => {
+                return combination.every(index => {
+                    return cells[index].textContent === (isCircleTurn ? 'O' : 'X');
+                });
+            });
+        };
+
+        const resetGame = () => {
+            cells.forEach(cell => cell.textContent = '');
+            winnerMessage.textContent = '';
+            isCircleTurn = false;
+        };
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                if (cell.textContent !== '' || winnerMessage.textContent) return;
+
+                cell.textContent = isCircleTurn ? 'O' : 'X';
+
+                if (checkWinner()) {
+                    winnerMessage.textContent = `${isCircleTurn ? 'O' : 'X'} venceu!`;
+                    return;
+                }
+
+                isCircleTurn = !isCircleTurn;
+            });
+        });
+
+        document.body.addEventListener('dblclick', resetGame); // Reset simples com duplo clique no body
+    </script>
+</body>
+</html>
